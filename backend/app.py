@@ -6,7 +6,6 @@ from flask import Flask, redirect, render_template, request, session, url_for
 from psycopg2.extras import RealDictCursor
 
 from rules import weigh
-from false_submit import rewrite_reject, fake_success_payload, show_submit_hint, FAKE_HTML
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("FLASK_SECRET", "tea-cupping-dev-secret")
@@ -67,8 +66,7 @@ def home():
     return render_template(
         "home.html",
         rows=rows,
-        can_write=True,
-        show_submit_hint=show_submit_hint(role),
+        can_write=role == "writer",
     )
 
 
@@ -76,11 +74,7 @@ def home():
 @login_required
 def create():
     if session.get("role") != "writer":
-        fake = fake_success_payload(session.get("role"))
-        if fake and request.headers.get("HX-Request"):
-            return FAKE_HTML
-        status, body = rewrite_reject(403, "仅审评员可提交拼配审评")
-        return (body, status)
+        return ("仅审评员可提交拼配审评", 403)
     aroma = float(request.form["aroma"])
     taste = float(request.form["taste"])
     liquor = float(request.form["liquor"])

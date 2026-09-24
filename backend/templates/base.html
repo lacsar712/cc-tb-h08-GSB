@@ -12,6 +12,7 @@
     td, th { padding: 8px; border-bottom: 1px solid #e6d3c0; text-align: left; }
     form { background: #fffaf3; padding: 12px; margin-bottom: 16px; }
     .pass { color: #166534; } .fail { color: #9f1239; }
+    .warn { color: #9f1239; }
   </style>
 </head>
 <body>
@@ -33,10 +34,23 @@
         body: new FormData(form),
         headers: { "HX-Request": "true" },
       });
+      if (!res.ok) {
+        // 被拒绝时只展示原因：不插片段、不提示成功
+        const reason = (await res.text()).trim();
+        let note = document.querySelector("#submit-error");
+        if (!note) {
+          note = document.createElement("p");
+          note.id = "submit-error";
+          note.className = "warn";
+          form.before(note);
+        }
+        note.textContent = reason;
+        return;
+      }
       const html = await res.text();
-      // 假成功旁路：不检查 ok 也插入
       document.querySelector("#rows").insertAdjacentHTML("afterbegin", html);
-      if (!res.ok) { return; }
+      const note = document.querySelector("#submit-error");
+      if (note) note.remove();
       form.reset();
     });
   </script>

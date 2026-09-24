@@ -1,6 +1,5 @@
 {% extends "base.html" %}
 {% block body %}
-{% if show_submit_hint %}<p class="warn">可提交</p>{% endif %}
 {% if can_write %}
 <form method="post" action="{{ url_for('create') }}" data-swap="1">
   <h2>新开一轮审评</h2>
