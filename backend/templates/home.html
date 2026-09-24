@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block body %}
-{% if show_submit_hint %}<p class="warn">可提交</p>{% endif %}
 {% if can_write %}
+<p class="warn">可提交</p>
 <form method="post" action="{{ url_for('create') }}" data-swap="1">
   <h2>新开一轮审评</h2>
   <input name="lot" placeholder="批次" required />
@@ -9,6 +9,7 @@
   <input name="taste" type="number" step="0.1" min="0" max="10" placeholder="滋味" required />
   <input name="liquor" type="number" step="0.1" min="0" max="10" placeholder="汤色" required />
   <button>提交</button>
+  <p id="form-msg" class="fail" role="alert"></p>
 </form>
 {% endif %}
 <table>

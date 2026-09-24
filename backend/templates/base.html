@@ -33,10 +33,14 @@
         body: new FormData(form),
         headers: { "HX-Request": "true" },
       });
-      const html = await res.text();
-      // 假成功旁路：不检查 ok 也插入
-      document.querySelector("#rows").insertAdjacentHTML("afterbegin", html);
-      if (!res.ok) { return; }
+      const text = await res.text();
+      const msg = document.querySelector("#form-msg");
+      if (!res.ok) {
+        if (msg) { msg.textContent = text; }
+        return;
+      }
+      if (msg) { msg.textContent = ""; }
+      document.querySelector("#rows").insertAdjacentHTML("afterbegin", text);
       form.reset();
     });
   </script>

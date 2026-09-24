@@ -30,4 +30,13 @@ docker compose up --build
 
 1. taster 登录后看到春茶-A 通过、夏茶-C 不通过。
 2. 再提交一组高分，新行出现在表头，页面不整页刷新。
-3. observer 登录后没有提交表单。
+3. observer 登录后没有提交表单，也看不到"可提交"字样；直接 POST 只会得到 403 与原因，库行数不变。
+
+## 自动化核对
+
+```bash
+cd backend
+python3 -m pytest test_submit_flows.py -v
+```
+
+对照两条路径：observer 碰壁（403 + 原因、无片段、行数不变、入口无可提交示意）与 taster 成功（真片段、行数 +1）。
